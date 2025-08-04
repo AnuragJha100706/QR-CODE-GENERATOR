@@ -1,0 +1,88 @@
+body {
+    background-color: #1a1a2e;
+    color: #ffffff;
+}
+
+.card {
+    background-color: #2a2a3e;
+    border: 1px solid #4a4a5e;
+    border-radius: 15px;
+    box-shadow: 0 8px 16px rgba(0,0,0,0.2);
+}
+
+.form-control {
+    background-color: #1a1a2e;
+    color: #ffffff;
+    border: 1px solid #4a4a5e;
+}
+
+.form-control::placeholder {
+    color: #8a8a9e;
+}
+
+.btn-primary {
+    background-color: #6a4bff;
+    border-color: #6a4bff;
+}
+
+.btn-primary:hover {
+    background-color: #5a3fef;
+    border-color: #5a3fef;
+}
+
+.btn-secondary {
+    background-color: #4a4a5e;
+    border-color: #4a4a5e;
+}
+
+.btn-secondary:hover {
+    background-color: #3a3a4e;
+    border-color: #3a3a4e;
+}
+
+.btn-danger {
+    background-color: #ff4b4b;
+    border-color: #ff4b4b;
+}
+
+.btn-danger:hover {
+    background-color: #ef3b3b;
+    border-color: #ef3b3b;
+}
+
+input[type="color"] {
+    -webkit-appearance: none;
+    -moz-appearance: none;
+    appearance: none;
+    width: 100%;
+    height: 40px;
+    padding: 0;
+    border: 1px solid #4a4a5e;
+    background-color: #1a1a2e;
+    cursor: pointer;
+}
+input[type="color"]::-webkit-color-swatch {
+    border-radius: 5px;
+    border: none;
+}
+input[type="color"]::-moz-color-swatch {
+    border-radius: 5px;
+    border: none;
+}
+
+#qr-code img, #qr-code canvas {
+    margin: 0 auto;
+    background-color: #ffffff;
+    padding: 10px;
+    border-radius: 10px;
+}
+
+.form-control-file {
+    color: #8a8a9e;
+}
+
+.form-control-color {
+    padding: 0;
+    border: none;
+    background: none;
+}
