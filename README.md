@@ -1,52 +1,78 @@
-# QR Code Generator
+# QR Studio Pro 🚀
 
-A simple, modern, and feature-rich web application for generating QR codes. Users can create custom QR codes from text or URLs, add a personal logo, change the color, and download the final image.
+A modern, high-performance web application for generating, styling, and scanning professional QR codes. Built with Vanilla HTML5, modern CSS3 glassmorphism, and client-side JavaScript.
 
-## Features
+![License](https://img.shields.io/badge/license-MIT-blue.svg)
+![Version](https://img.shields.io/badge/version-2.0.0-indigo.svg)
 
-- **Text/URL to QR Code:** Generate a QR code from any text string or website link.
-- **Custom Colors:** Use the intuitive color picker to select a unique color for your QR code.
-- **Add a Logo:** Upload an image to be placed in the center of your QR code.
-- **Download QR Code:** Save the generated QR code as a high-quality PNG image.
-- **Responsive Design:** The application is fully responsive and works on all devices.
-- **Dark Mode UI:** A sleek, modern dark purple theme.
+---
 
-## How to Use
+## ✨ Features
 
-To run this project locally, simply follow these steps:
+### 1. 🎯 Preset Content Types
+- 🌐 **Website URL:** Quick prefixes with real-time payload sanitation.
+- 📝 **Plain Text:** Multiline notes with live character counter.
+- 📶 **Wi-Fi Network:** Automatic connection QR code supporting WPA/WPA2/WPA3, WEP, Open networks, and hidden SSIDs.
+- 💬 **WhatsApp:** Direct chat link with pre-filled greeting message.
+- 📧 **Email:** Pre-populated recipient, subject line, and body template.
+- 📱 **Phone & SMS:** One-tap dial or pre-filled SMS text message.
+- 📇 **vCard Contact Card:** Standard vCard 3.0 digital business card.
+- 💳 **UPI / Payment:** Instant UPI QR for seamless digital payments.
 
-1.  **Download the files:**
-    You can either clone the repository or download the ZIP file.
-    
-2.  **Navigate to the project directory:**
-    ```bash
-    cd qr-code-generator
-    ```
+### 2. 🎨 Advanced Visual Customization
+- **Fill Modes:** Solid Color, Linear Gradient (45°), and Radial Gradient.
+- **Curated Palettes:** One-click presets (Cyber Violet, Emerald Mint, Sunset Glow, Electric Ocean, Midnight Black, Neon Candy).
+- **Dot Patterns:** Rounded, Dots, Square, Classy, Classy-Rounded, and Extra-Rounded.
+- **Corner Eye Shapes:** Square, Extra-Rounded, and Circular Dot.
+- **Corner Eye Color Override:** Set unique contrasting colors for corner locator eyes.
+- **Backgrounds:** Custom background colors or Transparent background toggle (PNG/SVG).
+- **Logos & Branding:** Drag-and-drop custom logos (PNG/JPG/SVG) or select from built-in brand badges (WhatsApp, Wi-Fi, GitHub, LinkedIn, Instagram, YouTube, etc.) with customizable size and padding.
+- **Frames & Call-to-Action:** Bottom banner, Top banner, or Polished Card with custom text (e.g. "SCAN ME").
 
-3.  **Open in your browser:**
-    Open the `index.html` file in your favorite web browser.
+### 3. 📥 High-Resolution Export & Quick Actions
+- **Formats:** Vector **SVG** (infinite resolution for print/signage), **PNG**, **JPEG**, and **WebP**.
+- **Resolution Selector:** Standard (320px), HD (600px), 2K Ultra (1200px), and 4K Print (2048px).
+- **Copy Image:** 1-Click copy to clipboard for pasting straight into Figma, Slack, or Docs.
+- **Copy Content:** Instant copy of the raw encoded URL/data.
+- **Direct Print:** Clean print layout dialog.
 
-## Technologies Used
+### 4. 🔍 Built-in QR Scanner & Decoder
+- **Image Upload / Drop:** Decode QR codes directly from image files.
+- **Live Camera Scanner:** Interactive viewfinder with real-time optical decoding via `jsQR`.
+- **One-Click Import:** Import scanned data directly into the generator to inspect or edit.
 
--   **HTML5:** The structure of the web page.
--   **CSS3:** Custom styling and the dark theme.
--   **JavaScript:** The core application logic.
--   **[Bootstrap](https://getbootstrap.com/):** For the responsive layout and UI components.
--   **[qrcode.js](https://github.com/davidshimjs/qrcodejs):** The library used for generating the QR codes.
+### 5. 💾 History
+- Automatically saves recently created QR codes locally in `localStorage`.
+- One-click restore or delete past codes.
 
-## File Structure
+---
 
+## 🛠️ Technologies Used
+
+- **HTML5 & Vanilla CSS3:** Dark glassmorphic design system using CSS variables and modern flex/grid layouts.
+- **JavaScript (ES6+):** Pure client-side reactive architecture.
+- **[qr-code-styling](https://github.com/kozakdenys/qr-code-styling):** Advanced SVG and Canvas QR rendering with gradient & corner styling.
+- **[jsQR](https://github.com/cozmo/jsQR):** Client-side QR code scanner and decoder.
+- **Google Fonts:** Plus Jakarta Sans.
+
+---
+
+## 🚀 Getting Started
+
+Simply open `index.html` in any modern web browser:
+
+```bash
+# Clone the repository
+git clone https://github.com/your-username/qr-code-generator.git
+
+# Open index.html in your browser
+double-click index.html or open via Live Server
 ```
-qr-code-generator/
-├── index.html      # The main HTML file
-├── style.css       # All custom styles
-└── script.js       # The application logic
-```
 
-## Contributing
+No build step, node modules, or external servers required!
 
-Contributions are welcome! If you have any ideas, suggestions, or find a bug, please open an issue or submit a pull request.
+---
 
-## License
+## 📄 License
 
-This project is licensed under the MIT License - see the [LICENSE.md](LICENSE.md) file for details.
+This project is licensed under the [MIT License](LICENSE.md).

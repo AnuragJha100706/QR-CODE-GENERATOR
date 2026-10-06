@@ -3,41 +3,800 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>QR Code Generator</title>
-    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+    <meta name="description" content="QR Studio Pro - Create stunning, custom QR codes with gradients, logos, custom shapes, and frames. Free high-res PNG and vector SVG export, plus instant QR scanner.">
+    <title>QR Studio Pro — Modern QR Code Generator & Scanner</title>
+    
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    
+    <!-- Libraries: qr-code-styling for high-end styling & SVG/PNG export, jsQR for scanning -->
+    <script src="https://unpkg.com/qr-code-styling@1.5.0/lib/qr-code-styling.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/jsqr@1.4.0/dist/jsQR.min.js"></script>
+    
+    <!-- App Styles -->
     <link rel="stylesheet" href="style.css">
 </head>
 <body>
-    <div class="container">
-        <div class="row">
-            <div class="col-md-6 offset-md-3">
-                <div class="card mt-5">
-                    <div class="card-body text-center">
-                        <h1 class="card-title">QR Code Generator</h1>
-                        <p class="card-text">Enter text or a URL to generate a QR code.</p>
-                        <div class="form-group">
-                            <input type="text" class="form-control" id="qr-text" placeholder="Enter text or URL">
-                        </div>
-                        <div class="form-row">
-                            <div class="form-group col-md-6">
-                                <label for="qr-color">QR Code Color</label>
-                                <input type="color" id="qr-color" value="#000000" title="Choose your color">
+    <!-- Background Ambient Glows -->
+    <div class="ambient-glow glow-1" aria-hidden="true"></div>
+    <div class="ambient-glow glow-2" aria-hidden="true"></div>
+
+    <!-- Main Navigation Bar -->
+    <header class="app-header">
+        <div class="header-container">
+            <div class="brand">
+                <div class="brand-icon">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <rect x="3" y="3" width="7" height="7" rx="1.5"></rect>
+                        <rect x="14" y="3" width="7" height="7" rx="1.5"></rect>
+                        <rect x="3" y="14" width="7" height="7" rx="1.5"></rect>
+                        <rect x="14" y="14" width="3" height="3" rx="0.5"></rect>
+                        <rect x="18" y="18" width="3" height="3" rx="0.5"></rect>
+                        <rect x="18" y="14" width="3" height="1"></rect>
+                        <rect x="14" y="18" width="1" height="3"></rect>
+                    </svg>
+                </div>
+                <div class="brand-text">
+                    <h1>QR Studio <span>Pro</span></h1>
+                    <span class="badge-tag">v2.0</span>
+                </div>
+            </div>
+
+            <!-- View Mode Switcher -->
+            <nav class="view-switcher" aria-label="Mode switcher">
+                <button type="button" class="mode-btn active" id="mode-generator" data-view="generator">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <path d="M12 20h9"></path>
+                        <path d="M16.5 3.5a2.121 2.121 0 0 1 3 3L7 19l-4 1 1-4L16.5 3.5z"></path>
+                    </svg>
+                    <span>Generator</span>
+                </button>
+                <button type="button" class="mode-btn" id="mode-scanner" data-view="scanner">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <path d="M4 7V4h3"></path>
+                        <path d="M20 7V4h-3"></path>
+                        <path d="M4 17v3h3"></path>
+                        <path d="M20 17v3h-3"></path>
+                        <line x1="4" y1="12" x2="20" y2="12"></line>
+                    </svg>
+                    <span>Scanner</span>
+                </button>
+            </nav>
+
+            <!-- Header Quick Actions -->
+            <div class="header-actions">
+                <button type="button" class="btn-icon" id="btn-open-history" title="Saved History" aria-label="Open History">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <circle cx="12" cy="12" r="10"></circle>
+                        <polyline points="12 6 12 12 16 14"></polyline>
+                    </svg>
+                    <span class="btn-tooltip">History</span>
+                </button>
+                <button type="button" class="btn-icon" id="btn-reset-all" title="Reset to Defaults" aria-label="Reset All">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <path d="M3 12a9 9 0 1 0 9-9 9.75 9.75 0 0 0-6.74 2.74L3 8"></path>
+                        <path d="M3 3v5h5"></path>
+                    </svg>
+                    <span class="btn-tooltip">Reset</span>
+                </button>
+            </div>
+        </div>
+    </header>
+
+    <!-- Main Workspace Container -->
+    <main class="main-container">
+        <!-- ================= GENERATOR VIEW ================= -->
+        <section id="view-generator" class="view-section active">
+            <div class="studio-layout">
+                <!-- Left: Configuration Panel -->
+                <div class="editor-panel">
+                    <!-- Preset Data Type Selector -->
+                    <div class="panel-card type-selector-card">
+                        <div class="card-header">
+                            <span class="step-num">1</span>
+                            <div>
+                                <h2>Select Content Type</h2>
+                                <p class="section-desc">Choose what kind of data to encode into the QR code</p>
                             </div>
-                            <div class="form-group col-md-6">
-                                <label for="logo-input">Logo</label>
-                                <input type="file" class="form-control-file" id="logo-input">
+                        </div>
+
+                        <div class="type-pills-grid" role="tablist">
+                            <button type="button" class="type-pill active" data-type="url" role="tab" aria-selected="true" id="tab-url">
+                                <span class="pill-icon">🌐</span>
+                                <span class="pill-label">Website URL</span>
+                            </button>
+                            <button type="button" class="type-pill" data-type="text" role="tab" aria-selected="false" id="tab-text">
+                                <span class="pill-icon">📝</span>
+                                <span class="pill-label">Plain Text</span>
+                            </button>
+                            <button type="button" class="type-pill" data-type="wifi" role="tab" aria-selected="false" id="tab-wifi">
+                                <span class="pill-icon">📶</span>
+                                <span class="pill-label">Wi-Fi Access</span>
+                            </button>
+                            <button type="button" class="type-pill" data-type="whatsapp" role="tab" aria-selected="false" id="tab-whatsapp">
+                                <span class="pill-icon">💬</span>
+                                <span class="pill-label">WhatsApp</span>
+                            </button>
+                            <button type="button" class="type-pill" data-type="email" role="tab" aria-selected="false" id="tab-email">
+                                <span class="pill-icon">📧</span>
+                                <span class="pill-label">Email</span>
+                            </button>
+                            <button type="button" class="type-pill" data-type="phone" role="tab" aria-selected="false" id="tab-phone">
+                                <span class="pill-icon">📱</span>
+                                <span class="pill-label">Phone & SMS</span>
+                            </button>
+                            <button type="button" class="type-pill" data-type="vcard" role="tab" aria-selected="false" id="tab-vcard">
+                                <span class="pill-icon">📇</span>
+                                <span class="pill-label">vCard Contact</span>
+                            </button>
+                            <button type="button" class="type-pill" data-type="upi" role="tab" aria-selected="false" id="tab-upi">
+                                <span class="pill-icon">💳</span>
+                                <span class="pill-label">UPI / Payment</span>
+                            </button>
+                        </div>
+                    </div>
+
+                    <!-- Dynamic Input Content Form -->
+                    <div class="panel-card content-card">
+                        <div class="card-header">
+                            <span class="step-num">2</span>
+                            <div>
+                                <h2>Enter Details</h2>
+                                <p class="section-desc" id="form-subtitle">Provide your link or web destination</p>
                             </div>
                         </div>
-                        <button class="btn btn-primary" id="generate-btn">Generate QR Code</button>
-                        <button class="btn btn-secondary" id="download-btn">Download QR Code</button>
-                        <button class="btn btn-danger" id="clear-btn">Clear</button>
-                        <div id="qr-code" class="mt-4"></div>
+
+                        <!-- 1. URL Form -->
+                        <div class="form-pane active" id="pane-url">
+                            <div class="form-group">
+                                <label for="input-url">Website URL</label>
+                                <div class="input-prefix-wrapper">
+                                    <span class="prefix-badge">https://</span>
+                                    <input type="text" id="input-url" class="form-input" placeholder="example.com/mypage" value="https://google.com">
+                                </div>
+                            </div>
+                            <div class="quick-examples">
+                                <span class="quick-title">Quick links:</span>
+                                <button type="button" class="example-chip" data-target="input-url" data-val="https://github.com">GitHub</button>
+                                <button type="button" class="example-chip" data-target="input-url" data-val="https://linkedin.com">LinkedIn</button>
+                                <button type="button" class="example-chip" data-target="input-url" data-val="https://instagram.com">Instagram</button>
+                            </div>
+                        </div>
+
+                        <!-- 2. Plain Text Form -->
+                        <div class="form-pane" id="pane-text">
+                            <div class="form-group">
+                                <label for="input-text">Text Content</label>
+                                <textarea id="input-text" class="form-input" rows="4" placeholder="Enter notes, quote, message or information here..."></textarea>
+                                <div class="char-count"><span id="text-chars">0</span> characters</div>
+                            </div>
+                        </div>
+
+                        <!-- 3. Wi-Fi Form -->
+                        <div class="form-pane" id="pane-wifi">
+                            <div class="form-grid">
+                                <div class="form-group">
+                                    <label for="wifi-ssid">Network Name (SSID) *</label>
+                                    <input type="text" id="wifi-ssid" class="form-input" placeholder="e.g. Home_5G">
+                                </div>
+                                <div class="form-group">
+                                    <label for="wifi-encryption">Security Type</label>
+                                    <select id="wifi-encryption" class="form-input">
+                                        <option value="WPA" selected>WPA / WPA2 / WPA3 (Default)</option>
+                                        <option value="WEP">WEP</option>
+                                        <option value="nopass">None (Open Network)</option>
+                                    </select>
+                                </div>
+                            </div>
+                            <div class="form-group" id="wifi-pass-group">
+                                <label for="wifi-password">Password</label>
+                                <div class="input-password-wrapper">
+                                    <input type="password" id="wifi-password" class="form-input" placeholder="Wi-Fi Password">
+                                    <button type="button" class="toggle-password-btn" id="toggle-wifi-pass" title="Show/Hide Password">👁️</button>
+                                </div>
+                            </div>
+                            <label class="checkbox-label">
+                                <input type="checkbox" id="wifi-hidden">
+                                <span>Hidden Network (SSID is not broadcasting)</span>
+                            </label>
+                        </div>
+
+                        <!-- 4. WhatsApp Form -->
+                        <div class="form-pane" id="pane-whatsapp">
+                            <div class="form-grid">
+                                <div class="form-group">
+                                    <label for="wa-phone">Phone Number (with Country Code) *</label>
+                                    <input type="tel" id="wa-phone" class="form-input" placeholder="e.g. +14155552671 or +919876543210">
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label for="wa-message">Pre-filled Message (Optional)</label>
+                                <textarea id="wa-message" class="form-input" rows="3" placeholder="Hello! I scanned your QR code and would like to connect..."></textarea>
+                            </div>
+                        </div>
+
+                        <!-- 5. Email Form -->
+                        <div class="form-pane" id="pane-email">
+                            <div class="form-group">
+                                <label for="email-to">Recipient Email *</label>
+                                <input type="email" id="email-to" class="form-input" placeholder="name@company.com">
+                            </div>
+                            <div class="form-group">
+                                <label for="email-subject">Subject</label>
+                                <input type="text" id="email-subject" class="form-input" placeholder="Inquiry from QR Code">
+                            </div>
+                            <div class="form-group">
+                                <label for="email-body">Message Body</label>
+                                <textarea id="email-body" class="form-input" rows="3" placeholder="Hi there, I wanted to reach out regarding..."></textarea>
+                            </div>
+                        </div>
+
+                        <!-- 6. Phone & SMS Form -->
+                        <div class="form-pane" id="pane-phone">
+                            <div class="segmented-control">
+                                <button type="button" class="seg-btn active" id="seg-call" data-subtype="call">Direct Call</button>
+                                <button type="button" class="seg-btn" id="seg-sms" data-subtype="sms">SMS Text</button>
+                            </div>
+                            <div class="form-group mt-3">
+                                <label for="phone-number">Phone Number *</label>
+                                <input type="tel" id="phone-number" class="form-input" placeholder="+1 (555) 000-0000">
+                            </div>
+                            <div class="form-group hidden" id="group-sms-msg">
+                                <label for="sms-message">Pre-filled SMS Message</label>
+                                <textarea id="sms-message" class="form-input" rows="3" placeholder="Hello! I would like to get in touch."></textarea>
+                            </div>
+                        </div>
+
+                        <!-- 7. vCard Form -->
+                        <div class="form-pane" id="pane-vcard">
+                            <div class="form-grid">
+                                <div class="form-group">
+                                    <label for="vcard-fn">First Name *</label>
+                                    <input type="text" id="vcard-fn" class="form-input" placeholder="John">
+                                </div>
+                                <div class="form-group">
+                                    <label for="vcard-ln">Last Name</label>
+                                    <input type="text" id="vcard-ln" class="form-input" placeholder="Doe">
+                                </div>
+                            </div>
+                            <div class="form-grid">
+                                <div class="form-group">
+                                    <label for="vcard-phone">Mobile Phone</label>
+                                    <input type="tel" id="vcard-phone" class="form-input" placeholder="+1 (555) 123-4567">
+                                </div>
+                                <div class="form-group">
+                                    <label for="vcard-email">Email Address</label>
+                                    <input type="email" id="vcard-email" class="form-input" placeholder="john.doe@brand.com">
+                                </div>
+                            </div>
+                            <div class="form-grid">
+                                <div class="form-group">
+                                    <label for="vcard-org">Company / Org</label>
+                                    <input type="text" id="vcard-org" class="form-input" placeholder="Acme Inc.">
+                                </div>
+                                <div class="form-group">
+                                    <label for="vcard-title">Job Title</label>
+                                    <input type="text" id="vcard-title" class="form-input" placeholder="Product Designer">
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label for="vcard-url">Website</label>
+                                <input type="text" id="vcard-url" class="form-input" placeholder="https://portfolio.me">
+                            </div>
+                        </div>
+
+                        <!-- 8. UPI / Payment Form -->
+                        <div class="form-pane" id="pane-upi">
+                            <div class="form-grid">
+                                <div class="form-group">
+                                    <label for="upi-id">UPI ID / VPA *</label>
+                                    <input type="text" id="upi-id" class="form-input" placeholder="username@okhdfcbank">
+                                </div>
+                                <div class="form-group">
+                                    <label for="upi-name">Payee Name</label>
+                                    <input type="text" id="upi-name" class="form-input" placeholder="Store or Business Name">
+                                </div>
+                            </div>
+                            <div class="form-grid">
+                                <div class="form-group">
+                                    <label for="upi-amount">Amount (INR - Optional)</label>
+                                    <input type="number" id="upi-amount" class="form-input" placeholder="e.g. 250" min="0" step="any">
+                                </div>
+                                <div class="form-group">
+                                    <label for="upi-note">Payment Note / Reference</label>
+                                    <input type="text" id="upi-note" class="form-input" placeholder="Bill payment or Order #123">
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Accordion Customization Panel -->
+                    <div class="customization-stack">
+                        <!-- Accordion 1: Colors & Gradients -->
+                        <div class="accordion-item open" id="acc-colors">
+                            <button type="button" class="accordion-header" aria-expanded="true">
+                                <div class="header-left">
+                                    <span class="acc-icon">🎨</span>
+                                    <div>
+                                        <span class="acc-title">Colors & Gradient</span>
+                                        <span class="acc-summary" id="color-summary">Solid • Cyber Indigo</span>
+                                    </div>
+                                </div>
+                                <span class="arrow-indicator">▾</span>
+                            </button>
+                            <div class="accordion-body">
+                                <div class="setting-row">
+                                    <label class="setting-label">Fill Mode</label>
+                                    <div class="segmented-control" id="fill-mode-control">
+                                        <button type="button" class="seg-btn active" data-mode="single">Solid</button>
+                                        <button type="button" class="seg-btn" data-mode="linear">Linear Gradient</button>
+                                        <button type="button" class="seg-btn" data-mode="radial">Radial Gradient</button>
+                                    </div>
+                                </div>
+
+                                <div class="color-pickers-grid">
+                                    <div class="color-control-box">
+                                        <label for="color-primary">Primary Color</label>
+                                        <div class="color-input-container">
+                                            <input type="color" id="color-primary" value="#6366f1">
+                                            <input type="text" id="color-primary-hex" class="hex-text" value="#6366f1">
+                                        </div>
+                                    </div>
+                                    <div class="color-control-box" id="gradient-secondary-box" style="display: none;">
+                                        <label for="color-secondary">Gradient End</label>
+                                        <div class="color-input-container">
+                                            <input type="color" id="color-secondary" value="#ec4899">
+                                            <input type="text" id="color-secondary-hex" class="hex-text" value="#ec4899">
+                                        </div>
+                                    </div>
+                                    <div class="color-control-box">
+                                        <label for="color-bg">Background</label>
+                                        <div class="color-input-container">
+                                            <input type="color" id="color-bg" value="#ffffff">
+                                            <input type="text" id="color-bg-hex" class="hex-text" value="#ffffff">
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="setting-row mt-2">
+                                    <label class="checkbox-label">
+                                        <input type="checkbox" id="transparent-bg">
+                                        <span>Transparent Background (PNG/SVG)</span>
+                                    </label>
+                                </div>
+
+                                <div class="palette-presets">
+                                    <span class="presets-title">Quick Palettes:</span>
+                                    <div class="palette-buttons-row">
+                                        <button type="button" class="palette-swatch" data-primary="#0f172a" data-secondary="#334155" data-bg="#ffffff" data-mode="single" title="Midnight Black" style="background: #0f172a;"></button>
+                                        <button type="button" class="palette-swatch" data-primary="#6366f1" data-secondary="#a855f7" data-mode="linear" title="Cyber Violet" style="background: linear-gradient(135deg, #6366f1, #a855f7);"></button>
+                                        <button type="button" class="palette-swatch" data-primary="#06b6d4" data-secondary="#3b82f6" data-mode="linear" title="Electric Ocean" style="background: linear-gradient(135deg, #06b6d4, #3b82f6);"></button>
+                                        <button type="button" class="palette-swatch" data-primary="#10b981" data-secondary="#059669" data-mode="single" title="Emerald Mint" style="background: #10b981;"></button>
+                                        <button type="button" class="palette-swatch" data-primary="#f43f5e" data-secondary="#fb923c" data-mode="linear" title="Sunset Glow" style="background: linear-gradient(135deg, #f43f5e, #fb923c);"></button>
+                                        <button type="button" class="palette-swatch" data-primary="#ec4899" data-secondary="#8b5cf6" data-mode="linear" title="Neon Candy" style="background: linear-gradient(135deg, #ec4899, #8b5cf6);"></button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Accordion 2: Pattern Shapes & Eyes -->
+                        <div class="accordion-item" id="acc-shapes">
+                            <button type="button" class="accordion-header" aria-expanded="false">
+                                <div class="header-left">
+                                    <span class="acc-icon">🧩</span>
+                                    <div>
+                                        <span class="acc-title">Shapes & Corner Eyes</span>
+                                        <span class="acc-summary" id="shape-summary">Rounded Dots • Extra-rounded Corners</span>
+                                    </div>
+                                </div>
+                                <span class="arrow-indicator">▾</span>
+                            </button>
+                            <div class="accordion-body">
+                                <div class="setting-row">
+                                    <label class="setting-label">Body Pattern Style</label>
+                                    <div class="shape-grid" id="pattern-shape-grid">
+                                        <button type="button" class="shape-opt" data-dot="square" title="Square">
+                                            <div class="shape-preview square"></div>
+                                            <span>Square</span>
+                                        </button>
+                                        <button type="button" class="shape-opt active" data-dot="rounded" title="Rounded">
+                                            <div class="shape-preview rounded"></div>
+                                            <span>Rounded</span>
+                                        </button>
+                                        <button type="button" class="shape-opt" data-dot="dots" title="Dots">
+                                            <div class="shape-preview dots"></div>
+                                            <span>Dots</span>
+                                        </button>
+                                        <button type="button" class="shape-opt" data-dot="classy" title="Classy">
+                                            <div class="shape-preview classy"></div>
+                                            <span>Classy</span>
+                                        </button>
+                                        <button type="button" class="shape-opt" data-dot="classy-rounded" title="Classy Rounded">
+                                            <div class="shape-preview classy-rounded"></div>
+                                            <span>Smooth</span>
+                                        </button>
+                                        <button type="button" class="shape-opt" data-dot="extra-rounded" title="Extra Rounded">
+                                            <div class="shape-preview extra-rounded"></div>
+                                            <span>Pill</span>
+                                        </button>
+                                    </div>
+                                </div>
+
+                                <div class="form-grid mt-3">
+                                    <div class="form-group">
+                                        <label for="corner-square-type">Corner Eye Frame</label>
+                                        <select id="corner-square-type" class="form-input">
+                                            <option value="extra-rounded" selected>Extra Rounded</option>
+                                            <option value="square">Square</option>
+                                            <option value="dot">Circular Dot</option>
+                                        </select>
+                                    </div>
+                                    <div class="form-group">
+                                        <label for="corner-dot-type">Corner Center Dot</label>
+                                        <select id="corner-dot-type" class="form-input">
+                                            <option value="dot" selected>Circular Dot</option>
+                                            <option value="square">Square</option>
+                                        </select>
+                                    </div>
+                                </div>
+
+                                <div class="setting-row mt-2">
+                                    <label class="checkbox-label">
+                                        <input type="checkbox" id="custom-eye-color-toggle">
+                                        <span>Custom Corner Eye Accent Color</span>
+                                    </label>
+                                </div>
+                                <div class="color-pickers-grid mt-2" id="custom-eye-color-wrap" style="display: none;">
+                                    <div class="color-control-box">
+                                        <label for="color-corner-square">Eye Frame Color</label>
+                                        <div class="color-input-container">
+                                            <input type="color" id="color-corner-square" value="#4f46e5">
+                                            <input type="text" id="color-corner-square-hex" class="hex-text" value="#4f46e5">
+                                        </div>
+                                    </div>
+                                    <div class="color-control-box">
+                                        <label for="color-corner-dot">Eye Dot Color</label>
+                                        <div class="color-input-container">
+                                            <input type="color" id="color-corner-dot" value="#4f46e5">
+                                            <input type="text" id="color-corner-dot-hex" class="hex-text" value="#4f46e5">
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Accordion 3: Logo & Branding -->
+                        <div class="accordion-item" id="acc-logo">
+                            <button type="button" class="accordion-header" aria-expanded="false">
+                                <div class="header-left">
+                                    <span class="acc-icon">🖼️</span>
+                                    <div>
+                                        <span class="acc-title">Logo & Center Icon</span>
+                                        <span class="acc-summary" id="logo-summary">No logo selected</span>
+                                    </div>
+                                </div>
+                                <span class="arrow-indicator">▾</span>
+                            </button>
+                            <div class="accordion-body">
+                                <div class="logo-dropzone" id="logo-dropzone">
+                                    <input type="file" id="logo-file-input" accept="image/*" class="file-hidden">
+                                    <div class="dropzone-content">
+                                        <span class="dropzone-icon">📁</span>
+                                        <p class="dropzone-text"><strong>Click to upload</strong> or drag & drop logo</p>
+                                        <span class="dropzone-sub">PNG, SVG, or JPG (Square works best)</span>
+                                    </div>
+                                </div>
+
+                                <div class="preset-logos-section">
+                                    <span class="preset-title">Or pick a popular brand icon:</span>
+                                    <div class="preset-icons-grid">
+                                        <button type="button" class="brand-chip" data-brand="wifi" title="Wi-Fi">📶 Wi-Fi</button>
+                                        <button type="button" class="brand-chip" data-brand="whatsapp" title="WhatsApp">💬 WhatsApp</button>
+                                        <button type="button" class="brand-chip" data-brand="globe" title="Website">🌐 Website</button>
+                                        <button type="button" class="brand-chip" data-brand="github" title="GitHub">🐙 GitHub</button>
+                                        <button type="button" class="brand-chip" data-brand="linkedin" title="LinkedIn">💼 LinkedIn</button>
+                                        <button type="button" class="brand-chip" data-brand="instagram" title="Instagram">📷 Instagram</button>
+                                        <button type="button" class="brand-chip" data-brand="youtube" title="YouTube">▶️ YouTube</button>
+                                        <button type="button" class="brand-chip" data-brand="mail" title="Email">✉️ Mail</button>
+                                    </div>
+                                </div>
+
+                                <div class="logo-controls-wrap" id="logo-controls-wrap" style="display: none;">
+                                    <div class="active-logo-preview">
+                                        <img id="active-logo-img" alt="Logo preview">
+                                        <span id="active-logo-name">Uploaded logo</span>
+                                        <button type="button" class="btn-clear-logo" id="btn-remove-logo" title="Remove logo">✕ Remove</button>
+                                    </div>
+                                    <div class="form-grid mt-3">
+                                        <div class="form-group">
+                                            <label for="logo-size-range">Logo Size (<span id="logo-size-val">30%</span>)</label>
+                                            <input type="range" id="logo-size-range" min="0.15" max="0.38" step="0.01" value="0.30">
+                                        </div>
+                                        <div class="form-group">
+                                            <label for="logo-margin-range">Padding (<span id="logo-margin-val">5px</span>)</label>
+                                            <input type="range" id="logo-margin-range" min="0" max="20" step="1" value="5">
+                                        </div>
+                                    </div>
+                                    <label class="checkbox-label mt-2">
+                                        <input type="checkbox" id="hide-background-dots" checked>
+                                        <span>Clear dots behind logo (Keeps scannable)</span>
+                                    </label>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Accordion 4: Frame & Label -->
+                        <div class="accordion-item" id="acc-frame">
+                            <button type="button" class="accordion-header" aria-expanded="false">
+                                <div class="header-left">
+                                    <span class="acc-icon">🏷️</span>
+                                    <div>
+                                        <span class="acc-title">Frame & Call-to-Action</span>
+                                        <span class="acc-summary" id="frame-summary">None</span>
+                                    </div>
+                                </div>
+                                <span class="arrow-indicator">▾</span>
+                            </button>
+                            <div class="accordion-body">
+                                <div class="setting-row">
+                                    <label class="setting-label">Frame Style</label>
+                                    <div class="frame-selector-grid">
+                                        <button type="button" class="frame-opt active" data-frame="none">None</button>
+                                        <button type="button" class="frame-opt" data-frame="badge-bottom">Bottom Banner</button>
+                                        <button type="button" class="frame-opt" data-frame="badge-top">Top Banner</button>
+                                        <button type="button" class="frame-opt" data-frame="card">Polished Card</button>
+                                    </div>
+                                </div>
+                                <div class="form-group mt-3" id="frame-text-group" style="display: none;">
+                                    <label for="frame-label-input">Banner Call-to-Action Text</label>
+                                    <input type="text" id="frame-label-input" class="form-input" value="SCAN ME" maxlength="24">
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Accordion 5: Advanced & Error Correction -->
+                        <div class="accordion-item" id="acc-advanced">
+                            <button type="button" class="accordion-header" aria-expanded="false">
+                                <div class="header-left">
+                                    <span class="acc-icon">⚙️</span>
+                                    <div>
+                                        <span class="acc-title">Quality & Scannability</span>
+                                        <span class="acc-summary">High Correction (H) • 10px Margin</span>
+                                    </div>
+                                </div>
+                                <span class="arrow-indicator">▾</span>
+                            </button>
+                            <div class="accordion-body">
+                                <div class="form-grid">
+                                    <div class="form-group">
+                                        <label for="error-correction">Error Correction Level</label>
+                                        <select id="error-correction" class="form-input">
+                                            <option value="L">L - Low (7% recovery)</option>
+                                            <option value="M">M - Medium (15% recovery)</option>
+                                            <option value="Q" selected>Q - Quartile (25% recovery)</option>
+                                            <option value="H">H - High (30% recovery - Best for Logos)</option>
+                                        </select>
+                                        <span class="form-hint">Higher correction allows scanning even if partially damaged or covered by a logo.</span>
+                                    </div>
+                                    <div class="form-group">
+                                        <label for="quiet-zone-range">Quiet Zone Margin (<span id="quiet-zone-val">10px</span>)</label>
+                                        <input type="range" id="quiet-zone-range" min="0" max="40" step="2" value="10">
+                                        <span class="form-hint">White padding around edges required by optical scanners.</span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Right: Sticky Interactive Live Preview & Download Center -->
+                <div class="preview-panel">
+                    <div class="preview-sticky-card">
+                        <div class="preview-header">
+                            <div class="scannability-status" id="scan-status">
+                                <span class="status-dot"></span>
+                                <span class="status-text">Ready to scan</span>
+                            </div>
+                            <span class="data-size-badge" id="data-size-badge">24 bytes</span>
+                        </div>
+
+                        <!-- QR Code Stage with frame support -->
+                        <div class="qr-stage-wrapper">
+                            <div class="qr-framed-card frame-none" id="qr-framed-card">
+                                <div class="frame-tag frame-top-tag" id="frame-top-tag">SCAN ME</div>
+                                <div id="qr-canvas-target" class="qr-canvas-target">
+                                    <!-- QR Code Styling injects canvas/svg here -->
+                                </div>
+                                <div class="frame-tag frame-bottom-tag" id="frame-bottom-tag">SCAN ME</div>
+                            </div>
+                        </div>
+
+                        <!-- Export Options Bar -->
+                        <div class="export-controls-card">
+                            <div class="export-options-grid">
+                                <div class="export-opt">
+                                    <label for="download-format">Format</label>
+                                    <select id="download-format" class="form-input select-sm">
+                                        <option value="png" selected>PNG (Image)</option>
+                                        <option value="svg">SVG (Vector Print)</option>
+                                        <option value="jpeg">JPEG (Compressed)</option>
+                                        <option value="webp">WebP (Modern Web)</option>
+                                    </select>
+                                </div>
+                                <div class="export-opt">
+                                    <label for="download-size">Resolution</label>
+                                    <select id="download-size" class="form-input select-sm">
+                                        <option value="320">Standard (320px)</option>
+                                        <option value="600" selected>HD (600px)</option>
+                                        <option value="1200">2K Ultra (1200px)</option>
+                                        <option value="2048">4K Print (2048px)</option>
+                                    </select>
+                                </div>
+                            </div>
+
+                            <!-- Primary Download Button -->
+                            <button type="button" class="btn-primary-action" id="btn-download-qr">
+                                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                    <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
+                                    <polyline points="7 10 12 15 17 10"></polyline>
+                                    <line x1="12" y1="15" x2="12" y2="3"></line>
+                                </svg>
+                                <span>Download QR Code</span>
+                            </button>
+
+                            <!-- Secondary Quick Action Buttons -->
+                            <div class="action-buttons-row">
+                                <button type="button" class="action-btn" id="btn-copy-image" title="Copy QR image to clipboard">
+                                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                        <rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect>
+                                        <path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path>
+                                    </svg>
+                                    <span>Copy Image</span>
+                                </button>
+                                <button type="button" class="action-btn" id="btn-copy-content" title="Copy QR encoded text">
+                                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                        <path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"></path>
+                                        <path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"></path>
+                                    </svg>
+                                    <span>Copy Link</span>
+                                </button>
+                                <button type="button" class="action-btn" id="btn-print-qr" title="Print QR code">
+                                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                        <polyline points="6 9 6 2 18 2 18 9"></polyline>
+                                        <path d="M6 18H4a2 2 0 0 1-2-2v-5a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2v5a2 2 0 0 1-2 2h-2"></path>
+                                        <rect x="6" y="14" width="12" height="8"></rect>
+                                    </svg>
+                                    <span>Print</span>
+                                </button>
+                            </div>
+                        </div>
                     </div>
                 </div>
             </div>
+        </section>
+
+        <!-- ================= SCANNER VIEW ================= -->
+        <section id="view-scanner" class="view-section">
+            <div class="scanner-container">
+                <div class="scanner-card">
+                    <div class="scanner-header">
+                        <h2>Scan & Decode QR Codes</h2>
+                        <p>Upload an image or point your camera to instantly decode any QR code.</p>
+                    </div>
+
+                    <!-- Scanner Tabs -->
+                    <div class="scanner-tabs">
+                        <button type="button" class="scan-tab-btn active" id="tab-scan-file">
+                            <span>📁 Upload Image</span>
+                        </button>
+                        <button type="button" class="scan-tab-btn" id="tab-scan-camera">
+                            <span>📷 Use Camera</span>
+                        </button>
+                    </div>
+
+                    <!-- Scanner Mode 1: File Dropzone -->
+                    <div class="scanner-mode-pane active" id="pane-scan-file">
+                        <div class="scanner-dropzone" id="scan-dropzone">
+                            <input type="file" id="scan-file-input" accept="image/*" class="file-hidden">
+                            <div class="scan-dropzone-inner">
+                                <div class="scan-icon-pulse">
+                                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8">
+                                        <path d="M4 14.899A7 7 0 1 1 15.71 8h1.79a4.5 4.5 0 0 1 2.5 8.242"></path>
+                                        <path d="M12 12v9"></path>
+                                        <path d="m16 16-4-4-4 4"></path>
+                                    </svg>
+                                </div>
+                                <h3>Drop your QR code image here</h3>
+                                <p>or click to browse from your device</p>
+                                <span class="badge-pill">Supports PNG, JPG, WebP, SVG</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Scanner Mode 2: Camera Feed -->
+                    <div class="scanner-mode-pane" id="pane-scan-camera">
+                        <div class="camera-stage">
+                            <video id="camera-video" playsinline></video>
+                            <canvas id="camera-canvas" style="display: none;"></canvas>
+                            <div class="camera-target-overlay">
+                                <div class="scanner-laser"></div>
+                                <div class="reticle-corner top-left"></div>
+                                <div class="reticle-corner top-right"></div>
+                                <div class="reticle-corner bottom-left"></div>
+                                <div class="reticle-corner bottom-right"></div>
+                            </div>
+                        </div>
+                        <div class="camera-controls">
+                            <button type="button" class="btn-primary-action" id="btn-toggle-camera">
+                                <span>Start Camera</span>
+                            </button>
+                        </div>
+                    </div>
+
+                    <!-- Scan Result Display -->
+                    <div class="scan-result-card" id="scan-result-card" style="display: none;">
+                        <div class="result-header">
+                            <div class="result-badge">
+                                <span id="scan-result-icon">✅</span>
+                                <span id="scan-result-type">Detected Content</span>
+                            </div>
+                            <span class="scan-timestamp" id="scan-result-time">Just now</span>
+                        </div>
+                        <div class="result-body">
+                            <div class="result-text-box" id="scan-result-text"></div>
+                        </div>
+                        <div class="result-actions">
+                            <button type="button" class="action-btn" id="btn-copy-scan-result">
+                                <span>Copy Text</span>
+                            </button>
+                            <a href="#" target="_blank" rel="noopener noreferrer" class="btn-primary-action btn-sm" id="btn-open-scan-link" style="display: none;">
+                                <span>Open Link ↗</span>
+                            </a>
+                            <button type="button" class="action-btn" id="btn-import-scan-result">
+                                <span>Load in Generator</span>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <!-- History Drawer / Modal -->
+    <div class="modal-overlay" id="history-modal" aria-hidden="true">
+        <div class="modal-card">
+            <div class="modal-header">
+                <div class="modal-title">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <circle cx="12" cy="12" r="10"></circle>
+                        <polyline points="12 6 12 12 16 14"></polyline>
+                    </svg>
+                    <h3>Recent QR Codes</h3>
+                </div>
+                <button type="button" class="btn-modal-close" id="btn-close-history" aria-label="Close modal">✕</button>
+            </div>
+            <div class="modal-body">
+                <div class="history-list" id="history-list">
+                    <!-- Populated dynamically -->
+                </div>
+                <div class="history-empty" id="history-empty">
+                    <span class="empty-icon">📂</span>
+                    <p>No saved QR codes yet.</p>
+                    <span>Codes you generate are automatically saved here for quick access.</span>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn-danger-outline" id="btn-clear-history">Clear History</button>
+            </div>
         </div>
     </div>
-    <script src="https://cdn.rawgit.com/davidshimjs/qrcodejs/gh-pages/qrcode.min.js"></script>
+
+    <!-- Toast Notification Container -->
+    <div class="toast-container" id="toast-container" aria-live="polite"></div>
+
+    <!-- Application Script -->
     <script src="script.js"></script>
 </body>
 </html>
